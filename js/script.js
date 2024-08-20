@@ -8,7 +8,7 @@ const message = document.querySelector(".message");
 const playAgainButton = document.querySelector(".play-again");
 
 let word = "magnolia";
-const guessedLetters = [];
+let guessedLetters = [];
 let remainingGuesses = 8;
 
 const getWord = async function () { // call words from word database
@@ -37,6 +37,7 @@ guessLetterButton.addEventListener("click", function (e) {
     message.innerText = ""; //empty message paragraph
     const guess = letterInput.value; // Let's grab what was entered in the input
     const goodGuess = validateInput(guess); //make sure it's a single letter
+   
     if (goodGuess) {
         makeGuess(guess); //guess letter
     }
@@ -59,7 +60,7 @@ const validateInput = function (input) { // validate input
 const makeGuess = function (guess) {
     guess = guess.toUpperCase();
     if (guessedLetters.includes(guess)) {
-        message.innerText = "You already guess that letter, silly. Try again."  // was a duplicate letter inputed?
+        message.innerText = "You already guessed that letter, silly. Try again."  // was a duplicate letter inputed?
     } else {
         guessedLetters.push(guess);
         console.log(guessedLetters);
@@ -111,8 +112,33 @@ const updateGuessesRemaining = function (guess) { //show remaining guesses
 };
 
 const checkIfWin = function() {
-    if (word.toUpperCase() === wordInProgress,innerText) {
+    if (word.toUpperCase() === wordInProgress.innerText) {
         message.classList.add("win");
         message.innerHTML = `<p class="highlight"> You guessed the correct word!</p>`;
+        
+        startOver();
     }
-};//won message!
+};
+
+const startOver = function() {
+    guessLetterButton.classList.add("hide");
+    remainingGuessesElement.classList.add("hide");
+    guessedLettersElement.classList.add("hide");
+    playAgainButton.classList.remove("hide");
+};
+
+playAgainButton.addEventListener("click", function() { //reset game
+    message.classList.remove("win");
+    guessedLetters = [];
+    remainingGuesses = 8;
+    remainingGuessesSpan.innerText = `${remainingGuesses} guesses`;
+    guessedLettersElement.innerText = "";
+    message.innerText = "";
+
+    getWord();
+
+    guessLetterButton.classList.remove("hide");
+    playAgainButton.classList.add("hide");
+    remainingGuessesElement.classList.remove("hide");
+    guessedLettersElement.classList.remove("hide");
+});
